@@ -1,0 +1,7 @@
+# don't add ipython notebooks - these are just used for in-house development
+notebooks
+
+# ignore temp files created by emacs
+*~
+configs/*~
+interface_pseudocode.py
