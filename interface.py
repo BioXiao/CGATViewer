@@ -122,7 +122,7 @@ class Interface(object):
                                    start=parsed_view[1],
                                    end=parsed_view[2])
 
-            scores = np.array(val for val in piled)
+            scores = np.array([val.nsegments for val in piled])
             data_type = self.get_params()['data_format']
             try:
                 self.data_container[data_type].append(scores)

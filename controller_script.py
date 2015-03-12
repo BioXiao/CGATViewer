@@ -134,6 +134,7 @@ def main(argv=None):
     for n in range(n_tracks):
         track = track_types[n]
         if track == "transcripts":
+            E.info("making transcript track")
             track_type = "ranges"
             data_format = PARAMS['intervals_type']
             inter_inst.makeTrack(track_type=track_type,
@@ -143,6 +144,7 @@ def main(argv=None):
                                  priority=int(PARAMS['genes_priority']))
 
         elif track == "histogram":
+            E.info("making data track")
             data_format = PARAMS['data_format']
             track_type = "data"
             inter_inst.makeTrack(track_type=track_type,
