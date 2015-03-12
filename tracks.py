@@ -1,7 +1,7 @@
 import matplotlib.patches as mpatches
 from matplotlib.collections import PatchCollection
 import layout_code
-
+import numpy as np
 
 # L = layout_code.layout(0,100)
 
@@ -79,30 +79,33 @@ class regions(object):
         for pair in pos_pairs:
             sstart = pair[0]  # start of range
             eend = pair[1]  # end of range
+            relstart = sstart - start
+            relend = eend - start
             height = heights[i]  # height of range
             if ttype == "r":
-                rn = self.check_rowocc(rows, (sstart, eend))
+                rn = self.check_rowocc(rows, (relstart, relend))
                 # finds a row in the chart with space for this rectangle
                 if rn is False:  # if there is no free space
                     self.new_row(rows)  # add a new row and put it in there
                     rn = len(rows) - 1
-                self.occupy_row(rows, rn, (sstart, eend))
+                self.occupy_row(rows, rn, (relstart, relend))
                 # prevent more rectangles being added in the same spot
             r = mpatches.Rectangle([sstart, rn], (eend-sstart), height)
             # make a rectangle with corners at:
             # (sstart,0), (eend, 0), (sstart, height), (eend,height)
-            if ttype == "r":
-                max_height = len(rows)
-                #  ranges chart height depends on number of overlapping ranges
-            elif ttype == "b":
-                max_height = max(heights)
-                #  bar chart height depends on tallest bar
-            self.max_height = max_height
             patches.append(r)  # store the patch in the patch list
             i += 1
         p = PatchCollection(patches, match_original=True)
         self.patches = p
         # convert rectangles to a patch collection
+        if ttype == "r":
+            max_height = len(rows)
+            #  ranges chart height depends on number of overlapping ranges
+        elif ttype == "b":
+            max_height = max(heights)
+            #  bar chart height depends on tallest bar
+        self.max_height = max_height
+
         return p
 
     def check_rowocc(self, rows, positions):
@@ -188,7 +191,7 @@ class regions(object):
     def get_type(self):
         '''
         returns the chart type requested
-        currently "r" is genomic ragnes, "b" is bar chart
+`        currently "r" is genomic ragnes, "b" is bar chart
         '''
         if self.ttype == "r":
             return "genomic ranges"
