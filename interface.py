@@ -35,6 +35,35 @@ def parse_config(config_file, allow_missing=True):
     return params
 
 
+def count_region(samfile, genome_view):
+    '''
+    count reads aligned to each base over a
+    region
+    '''
+    # get all reads in region of genome_view
+    reads = samfile.fetch(reference=genome_view[0],
+                          start=genome_view[1],
+                          end=genome_view[2])
+
+    # setup an empty frequency array
+    freq_array = np.zeros(shape=abs(genome_view[2]-genome_view[1]),
+                          dtype=np.int64)
+
+    # cache all bases in genome view and index them
+    idx_dict = {}
+    for i, n in enumerate(range(genome_view[1],
+                                genome_view[2]+1)):
+        idx_dict[n] = i
+
+    for read in reads:
+        maps = read.get_reference_positions()
+        for j in maps:
+            idx = idx_dict[j]
+            freq_array[idx] += 1
+
+    return freq_array
+
+
 class Interface(object):
     '''
     CGATViewer interface object.  Parses input files into a params
@@ -118,11 +147,16 @@ class Interface(object):
                 print "Creating %s.bai. This may take some time" % file_path
                 os.system("samtools index %s" % file_path)
 
-            piled = samfile.pileup(reference=parsed_view[0],
-                                   start=parsed_view[1],
-                                   end=parsed_view[2])
+            #piled = samfile.pileup(reference=parsed_view[0],
+            #                       start=parsed_view[1],
+            #                       end=parsed_view[2])
 
-            scores = np.array([val.nsegments for val in piled])
+            scores = count_region(samfile, parsed_view)
+            # piled = samfile.fetch(reference=parsed_view[0],
+            #                       start=parsed_view[1],
+            #                       end=parsed_view[2])
+
+            # scores = np.array([val.n for val in piled])
             data_type = self.get_params()['data_format']
             try:
                 self.data_container[data_type].append(scores)
