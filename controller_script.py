@@ -81,7 +81,8 @@ def main(argv=None):
                       help="location of config file if not"
                       " in current directory")
 
-    parser.add_option("--input-gtf-file", dest="gtf_file", type="string",
+    parser.add_option("--input-intervals-file", dest="interval_file",
+                      type="string",
                       help="input gtf/gff file, where applicable")
 
     # add common options (-h/--help, ...) and parse command line
@@ -114,8 +115,9 @@ def main(argv=None):
     E.info("getting data from %s" % options.bam_file)
     inter_inst.set_data_vector(options.bam_file,
                                data_format=PARAMS['data_format'])
-    E.info("getting ranges from %s" % options.gtf_file)
-    inter_inst.set_intervals_vector(options.gtf_file,
+
+    E.info("getting ranges from %s" % options.interval_file)
+    inter_inst.set_intervals_vector(options.interval_file,
                                     file_format=PARAMS['intervals_type'])
 
     # count number of track instances required
@@ -153,7 +155,10 @@ def main(argv=None):
                                  layout=figure,
                                  priority=int(PARAMS['graphs_priority']))
 
+    E.info("generating plot")
     figure.generatePlot()
+    E.info("saving plot")
+    figure.save_plot(file_name="test_figure.png")
 
     # write footer and output benchmark information.
     E.Stop()

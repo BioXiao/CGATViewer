@@ -1,6 +1,6 @@
 
 import matplotlib.pyplot as plt
-
+import CGAT.Experiment as E
 '''
 Need:
     region plotting to determine x axis - region_start, region_finish
@@ -133,6 +133,7 @@ class layout(object):
 
         # plot subplots
         for track in sorted_priority_list:
+            E.info("plotting subplots")
             # ax = ax[subplot_no,1].plot(number_of_tracks,1,subplot_no)
             axarr[subplot_no].set_ylim([0, track.get_plotheight()])
             # I think i need to call the draw otherwise they don't get made?
@@ -140,6 +141,7 @@ class layout(object):
             axarr[subplot_no].set_ylabel(track.get_Name())
             subplot_no += 1
 
+        E.info("returning figure")
         return fig
 
         """
@@ -160,22 +162,16 @@ class layout(object):
         return plt.show(self.generatePlot(), block=False)
 
     def save_plot(self,
-                  file_name,
-                  dpi=None,
-                  facecolor="w",
-                  edgecolor="w",
-                  orientation="portrait",
-                  papertype=None,
-                  format=None):
+                  file_name):
         """ file_name= string containing file path to save file to"""
 
-        return plt.savefig(file_name,
-                           dpi,
-                           facecolor,
-                           edgecolor,
-                           orientation,
-                           papertype,
-                           format)
+        plt.savefig(file_name)
+                    # dpi,
+                    # facecolor,
+                    # edgecolor,
+                    # orientation,
+                    # papertype,
+                    # format)
 
 """
     def removeTrack(self, unwanted_track_objects):

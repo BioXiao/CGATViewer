@@ -1,5 +1,5 @@
 import CGAT.IOTools as IOTools
-import CGAT.Pipeline as Pipeline
+import CGATPipelines.Pipeline as Pipeline
 import CGAT.GTF as GTF
 import CGAT.Bed as Bed
 import ConfigParser
@@ -147,16 +147,7 @@ class Interface(object):
                 print "Creating %s.bai. This may take some time" % file_path
                 os.system("samtools index %s" % file_path)
 
-            #piled = samfile.pileup(reference=parsed_view[0],
-            #                       start=parsed_view[1],
-            #                       end=parsed_view[2])
-
             scores = count_region(samfile, parsed_view)
-            # piled = samfile.fetch(reference=parsed_view[0],
-            #                       start=parsed_view[1],
-            #                       end=parsed_view[2])
-
-            # scores = np.array([val.n for val in piled])
             data_type = self.get_params()['data_format']
             try:
                 self.data_container[data_type].append(scores)
@@ -276,9 +267,10 @@ class Interface(object):
 
         inst.set_Priority(new_priority=priority)
 
-    def makeLayout(self, genome_view):
+    def makeLayout(self, genome_view, aesthetics=None):
         '''
         Instantiate the Layout class
+        aesthetics is a dictionary parsed from config.ini
         '''
 
         # add in aesthetics parameters from the config file
